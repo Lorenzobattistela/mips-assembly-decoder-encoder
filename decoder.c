@@ -161,6 +161,19 @@ char *mountTypeIInstructionString(char **splittedInstruction) {
         return instructionString;
     }
 
+    else if(strncmp(operationString, "beq", 3) == 0) {
+        char *instructionString = malloc(100);
+
+        char *registerString1 = getRegisterString(binaryStringToInt(splittedInstruction[1]));
+        char *registerString2 = getRegisterString(binaryStringToInt(splittedInstruction[2]));
+        int desloc = binaryStringToInt(splittedInstruction[3]);
+        char *label = createLabel();
+
+        sprintf(instructionString, "step:%d; %s %s, %s, %s", desloc, operationString, registerString1, registerString2, label);
+
+        return instructionString;
+    }
+
     char *registerString1 = getRegisterString(binaryStringToInt(splittedInstruction[1]));
     char *registerString2 = getRegisterString(binaryStringToInt(splittedInstruction[2]));
     int immediate = binaryStringToInt(splittedInstruction[3]);
@@ -270,4 +283,42 @@ int getOpcode(char *binaryString) {
     int opcode = binaryStringToInt(opcodeString);
     free(opcodeString);
     return opcode;
+}
+
+int counter = 0;
+char *createLabel() {
+    char *label = malloc(100);
+    sprintf(label, "label_%d", counter);
+    counter++;
+    return label;
+}
+
+bool isBeqInstruction(char *instruction) {
+    if(strncmp(instruction, "step:", 5) == 0) {
+        return true;
+    }
+    return false;
+}
+
+int getBeqInstructionDesloc(char *instruction) {
+    // remove step: from str
+    char *instructionWithoutStep = instruction + 5;
+    char *desloc = malloc(100);
+    for(int i = 0; i < strlen(instructionWithoutStep); i++) {
+        if(instructionWithoutStep[i] == ';') {
+            // copy the desloc (str[0:i])
+            strncpy(desloc, instructionWithoutStep, i);
+            desloc[i] = '\0';
+            instruction + 1;
+            return atoi(desloc);
+        }
+    }
+}
+
+char *getLabelFromInstruction(char *instruction) {
+    char *label = malloc(10);
+    char *instructionCopy = strdup(instruction);
+    // label_n -> get last 7 chars of the str
+    strncpy(label, instructionCopy + strlen(instructionCopy) - 7, 7);
+    return label;  
 }

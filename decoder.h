@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #ifndef DECODER_H
 #define DECODER_H
@@ -86,5 +87,14 @@ char **splitITypeInstruction(char *binaryInstruction);
 char **splitRTypeInstruction(char *binaryInstruction);
 
 int getOpcode(char *binaryString);
+
+char *createLabel();
+
+bool isBeqInstruction(char *instruction);
+
+int getBeqInstructionDesloc(char *instruction);
+
+char *getLabelFromInstruction(char *instruction);
+
 
 #endif
