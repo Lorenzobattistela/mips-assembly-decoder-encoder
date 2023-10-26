@@ -1,0 +1,10 @@
+.text
+.globl main
+main:
+
+sub $t1, $s3, $s4
+or $t1, $s3, $s4
+lw $s2, 0($t0)
+sw $t0, 0($t2)
+beq $s5, $zero, label_0
+label_0:	sub $t1, $s3, $s4

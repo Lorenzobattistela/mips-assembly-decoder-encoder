@@ -90,11 +90,16 @@ int getOpcode(char *binaryString);
 
 char *createLabel();
 
+char *getLabel(int i);
+
 bool isBeqInstruction(char *instruction);
 
 int getBeqInstructionDesloc(char *instruction);
 
 char *getLabelFromInstruction(char *instruction);
 
+int calculateAddress(int currentAddress, int desloc);
+
+char *removeBeqPrefix(char *instruction);
 
 #endif

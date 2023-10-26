@@ -13,8 +13,21 @@ char *getNextLine(FILE *file) {
     return line;
 }
 
+void writeLabel(FILE *file, char *label) {
+    fprintf(file, "%s", label);
+}
+
 void writeLine(FILE *file, char *line) {
-    fprintf(file, "%s", line);
+    fprintf(file, "%s\n", line);
+}
+
+FILE *createFile(char *path) {
+    FILE *file = fopen(path, "w");
+    if (file == NULL) {
+        printf("Error: Could not create file %s\n", path);
+        exit(1);
+    }
+    return file;
 }
 
 FILE *getFile(char *path, char *mode) {

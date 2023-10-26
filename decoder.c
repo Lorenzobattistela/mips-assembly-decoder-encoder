@@ -293,11 +293,22 @@ char *createLabel() {
     return label;
 }
 
+char *getLabel(int i) {
+    char *label = malloc(10);
+    sprintf(label, "label_%d:\t", i);
+    return label;
+}
+
 bool isBeqInstruction(char *instruction) {
     if(strncmp(instruction, "step:", 5) == 0) {
         return true;
     }
     return false;
+}
+
+char *removeBeqPrefix(char *instruction) {
+    char *newInstruction = instruction + 8;
+    return newInstruction;
 }
 
 int getBeqInstructionDesloc(char *instruction) {
@@ -321,4 +332,8 @@ char *getLabelFromInstruction(char *instruction) {
     // label_n -> get last 7 chars of the str
     strncpy(label, instructionCopy + strlen(instructionCopy) - 7, 7);
     return label;  
+}
+
+int calculateAddress(int currentAddress, int desloc) {
+    return currentAddress + (desloc * 4);
 }
