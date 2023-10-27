@@ -155,7 +155,8 @@ char *mountTypeIInstructionString(char **splittedInstruction) {
         char *registerString1 = getRegisterString(binaryStringToInt(splittedInstruction[1]));
         char *registerString2 = getRegisterString(binaryStringToInt(splittedInstruction[2]));
 
-        int immediate = binaryStringToInt(splittedInstruction[3]);
+        int immediate = binaryStringToIntWithNegatives(splittedInstruction[3]);
+        printf("IMMEDIATE: %d\n", immediate);
 
         sprintf(instructionString, "%s %s, %d(%s)", operationString, registerString2, immediate, registerString1);
         return instructionString;
@@ -336,4 +337,25 @@ char *getLabelFromInstruction(char *instruction) {
 
 int calculateAddress(int currentAddress, int desloc) {
     return currentAddress + (desloc * 4);
+}
+
+int calculateIndexFromAddress(int address) {
+    return (address - INITIAL_ADDRESS) / 4;
+}
+
+int binaryStringToIntWithNegatives(char *binaryStr) {
+    int length = strlen(binaryStr);
+    int isNegative = 0;
+
+    if (length > 0 && binaryStr[0] == '1') {
+        isNegative = 1;
+    }
+
+    long number = strtol(binaryStr, NULL, 2);
+
+    if (isNegative) {
+        number -= (1 << length); // Subtract 2^length
+    }
+
+    return (int)number;
 }

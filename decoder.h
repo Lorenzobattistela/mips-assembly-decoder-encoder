@@ -102,4 +102,8 @@ int calculateAddress(int currentAddress, int desloc);
 
 char *removeBeqPrefix(char *instruction);
 
+int calculateIndexFromAddress(int address);
+
+int binaryStringToIntWithNegatives(char *binaryStr);
+
 #endif

@@ -21,6 +21,10 @@ void writeLine(FILE *file, char *line) {
     fprintf(file, "%s\n", line);
 }
 
+void writeLineWithoutBreak(FILE *file, char *line) {
+    fprintf(file, "%s", line);
+}
+
 FILE *createFile(char *path) {
     FILE *file = fopen(path, "w");
     if (file == NULL) {
