@@ -76,6 +76,12 @@ char *mountTypeRInstructionString(char **splittedInstruction);
 
 char *mountTypeIInstructionString(char **splittedInstruction);
 
+int getAddressFromJInstruction(char *instruction);
+
+char *shortJumpAddress(char *jump);
+
+char *fixJumpAddress(char *jump);
+
 int binaryStringToInt(char *binaryStr);
 
 char *hexToBinary(const char *hexValue);
@@ -85,6 +91,8 @@ int hexStringToInt(char *hexString);
 char **splitITypeInstruction(char *binaryInstruction);
 
 char **splitRTypeInstruction(char *binaryInstruction);
+
+char **splitJTypeInstruction(char *binaryInstruction);
 
 int getOpcode(char *binaryString);
 

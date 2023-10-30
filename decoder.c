@@ -128,11 +128,35 @@ char *getOperationString(int opcode) {
 char *mountTypeJInstructionString(char **splittedInstruction) {
     char *instructionString = malloc(100);
     char *operationString = getOperationString(binaryStringToInt(splittedInstruction[0]));
-    int immediate = binaryStringToInt(splittedInstruction[1]);
+
+    char *jumpAddr = fixJumpAddress(splittedInstruction[1]);
+
+    int immediate = binaryStringToInt(jumpAddr);
 
     sprintf(instructionString, "%s %d", operationString, immediate);
 
     return instructionString;
+}
+
+int getAddressFromJInstruction(char *instruction) {
+    // get all chars except for the 2 first (j )
+    char *address = instruction + 2;
+    return atoi(address);
+}
+
+char *fixJumpAddress(char *jump) {
+    printf("jump: %s\n", jump);
+    char *newJump = malloc(100);
+    // add 4 0 bits in the start of the string and 2 0 bits at the end
+    sprintf(newJump, "0000%s00", jump);
+    return newJump;
+}
+
+char *shortJumpAddress(char *jump) {
+    char *newJump = malloc(100);
+    strncpy(newJump, jump + 4, 26); // remove first 4 bits and copy just 26 (removing 2 last);
+    newJump[26] = '\0';
+    return newJump;
 }
 
 char *mountTypeRInstructionString(char **splittedInstruction) {
@@ -167,7 +191,8 @@ char *mountTypeIInstructionString(char **splittedInstruction) {
 
         char *registerString1 = getRegisterString(binaryStringToInt(splittedInstruction[1]));
         char *registerString2 = getRegisterString(binaryStringToInt(splittedInstruction[2]));
-        int desloc = binaryStringToInt(splittedInstruction[3]);
+        int desloc = binaryStringToIntWithNegatives(splittedInstruction[3]);
+        printf("Binary string to int with negatives: %d\n", binaryStringToIntWithNegatives(splittedInstruction[3]));
         char *label = createLabel();
 
         sprintf(instructionString, "step:%d; %s %s, %s, %s", desloc, operationString, registerString1, registerString2, label);
@@ -243,6 +268,23 @@ char **splitITypeInstruction(char *binaryInstruction) {
     res[2][5] = '\0';
     strncpy(res[3], binaryInstruction + 16, 16);
     res[3][16] = '\0';
+
+    return res;
+}
+
+char **splitJTypeInstruction(char *binaryInstruction) {
+    if (strlen(binaryInstruction) != 32) {
+        return NULL;
+    }
+    char **res = malloc(2 * sizeof(char *));
+    res[0] = malloc(7);
+    res[1] = malloc(26);
+
+    strncpy(res[0], binaryInstruction, 6);
+    res[0][6] = '\0';
+
+    strncpy(res[1], binaryInstruction + 6, 26);
+    res[1][26] = '\0';
 
     return res;
 }

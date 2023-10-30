@@ -19,6 +19,7 @@ int main() {
     int count = 0;
     int last_written_address = 0;
 
+    char **labels = malloc(1000 * sizeof(char*));
     int *labelsIndexes = malloc(1000 * sizeof(int));
     FILE *f = getFile("test.txt", "r");
     FILE *outputFile = createFile("output.txt");
@@ -42,7 +43,38 @@ int main() {
         }
 
         else if (opcode == 2){
-            // jump instruction
+            char **splitted = splitJTypeInstruction(binary);
+            char *instructionString = mountTypeJInstructionString(splitted);
+            int addr = getAddressFromJInstruction(instructionString);
+
+            printf("Instruction string: %s\n", instructionString);
+            printf("Address: %d\n", addr);
+
+            // find some label (if exists) that has the same addr of this instruction
+            // if exists, its ok because it will be written anyway
+            // if it does not exist, we need to create a new label on that addr
+
+            bool labelExists = false;
+            for(int i = 0; i < count; i++) {
+                if(labelsIndexes[i] == addr) {
+                    labelExists = true;
+                    break;
+                }
+            }
+
+            printf("Label exists: %d\n", labelExists);
+
+            if(!labelExists) {
+                labelsIndexes[count] = addr;
+                labels[count] = createLabel();
+                count++;
+            }
+
+            // add label to instruction string
+            char *instr = malloc(100);
+            sprintf(instr, "j %s", labels[count - 1]);
+            writeLine(outputFile, instr);
+
         }
 
         else {
@@ -57,7 +89,18 @@ int main() {
                 int calculatedAddress = calculateAddress(memoryAddress, desloc);
 
                 printf("Desloc: %d\n", desloc);
-                labelsIndexes[count] = calculatedAddress + 4;
+
+                if(desloc < 0) {
+                    printf("Desloc is negative\n");
+                    calculatedAddress -= 4;
+                }
+
+                else {
+                    calculatedAddress += 4;
+                }
+
+                labelsIndexes[count] = calculatedAddress;
+                labels[count] = getLabelFromInstruction(instructionString);
                 count++;
                 printf("initial address: %d\n", 0x00400000);
                 printf("current address: %d\n", memoryAddress);
@@ -102,7 +145,7 @@ int main() {
     while ((line = getNextLine(outputFile)) != NULL) {
         printf("%s", line);
         if(labelsIndexes[last_written_address] == memoryAddress) {
-            char *label = getLabel(last_written_address);
+            char *label = labels[last_written_address];
             printf("Label: %s should be written in address %d\n", label, memoryAddress);
             writeLabel(out, label);
             last_written_address++;

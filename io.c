@@ -14,7 +14,7 @@ char *getNextLine(FILE *file) {
 }
 
 void writeLabel(FILE *file, char *label) {
-    fprintf(file, "%s", label);
+    fprintf(file, "%s:\t", label);
 }
 
 void writeLine(FILE *file, char *line) {
