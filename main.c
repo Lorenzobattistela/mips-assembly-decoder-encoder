@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "io.h"
 #include "decoder.h"
+#include "encoder.h"
 
 // store address, increment address and then compare label with current_address (where label addr is the addr where current was called (ex: beq 1, 2, label) + (label_desloc * 4)) 
 
@@ -15,6 +16,23 @@ int compareIntegers(const void *a, const void *b) {
 }
 
 int main() {
+    FILE *input = getFile("entrada.asm", "r");
+    FILE *output = getFile("saida.txt", "w");
+
+    char *line;
+    while(line = getNextLine(input)) {
+        printf("%s\n", line);
+        char *trimmedLine = trim(line);
+        printf("%s\n", trimmedLine);
+        // writeLine(output, line);
+        int opcode = getOpcodeFromAsm(trimmedLine);
+        printf("Opcode: %d\n", opcode);
+        
+        free(line);
+    }
+}
+
+int decode() {
     int memoryAddress = 0x00400000;
     int count = 0;
     int last_written_address = 0;

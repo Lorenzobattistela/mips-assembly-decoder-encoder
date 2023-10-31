@@ -398,6 +398,5 @@ int binaryStringToIntWithNegatives(char *binaryStr) {
     if (isNegative) {
         number -= (1 << length); // Subtract 2^length
     }
-
     return (int)number;
 }
