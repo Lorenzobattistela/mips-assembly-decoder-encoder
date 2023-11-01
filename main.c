@@ -3,6 +3,7 @@
 #include "io.h"
 #include "decoder.h"
 #include "encoder.h"
+#include "helpers.h"
 
 // store address, increment address and then compare label with current_address (where label addr is the addr where current was called (ex: beq 1, 2, label) + (label_desloc * 4)) 
 
@@ -20,6 +21,13 @@ int main() {
     FILE *output = getFile("saida.txt", "w");
 
     char *line;
+    //skip first 3 lines
+    for(int i = 0; i < 3; i++) {
+        line = getNextLine(input);
+        printf("%s\n", line);
+        free(line);
+    }
+
     while(line = getNextLine(input)) {
         printf("%s\n", line);
         char *trimmedLine = trim(line);
@@ -27,8 +35,26 @@ int main() {
         // writeLine(output, line);
         int opcode = getOpcodeFromAsm(trimmedLine);
         printf("Opcode: %d\n", opcode);
-        
-        free(line);
+
+        if(opcode == 0) {
+            char **result = splitRTypeString(trimmedLine);
+
+            char *binaryInstruction = encodeInstructionToBinary(result);
+
+            char *hexadecimalInstruction = binaryToHexadecimal(binaryInstruction);
+
+            printf("Binary instruction: %s\n", binaryInstruction);      
+
+            printf("Hexadecimal instruction: %s\n", hexadecimalInstruction);      
+        }
+        else if(opcode == 2) {
+            // j instruction
+            int a = 0;
+        }
+        else {
+            // type-i instruction
+            int b = 0;
+        }
     }
 }
 

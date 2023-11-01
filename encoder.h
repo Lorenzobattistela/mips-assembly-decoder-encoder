@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "helpers.h"
 
 #ifndef ENCODER_H
 #define ENCODER_H
@@ -10,6 +11,8 @@ char *trim(char *line);
 
 int getOpcodeFromAsm(char *instruction);
 
-int getRegisterInt(char *register);
+char **splitRTypeString(char *instruction);
+
+char *encodeInstructionToBinary(char **splittedInstruction);
 
 #endif

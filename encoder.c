@@ -15,104 +15,64 @@ char *trim(char *line) {
     return line;
 }
 
-int getRegisterInt(char *register) {
-    if(strncmp(register, "$zero", 5) == 0) {
-        return 0;
-    }
-    else if(strncmp(register, "$at", 3) == 0) {
-        return 1;
-    }
-    else if(strncmp(register, "$v0", 3) == 0) {
-        return 2;
-    }
-    else if(strncmp(register, "$v1", 3) == 0) {
-        return 3;
-    }
-    else if(strncmp(register, "$a0", 3) == 0) {
-        return 4;
-    }
-    else if(strncmp(register, "$a1", 3) == 0) {
-        return 5;
-    }
-    else if(strncmp(register, "$a2", 3) == 0) {
-        return 6;
-    }
-    else if(strncmp(register, "$a3", 3) == 0) {
-        return 7;
-    }
-    else if(strncmp(register, "$t0", 3) == 0) {
-        return 8;
-    }
-    else if(strncmp(register, "$t1", 3) == 0) {
-        return 9;
-    }
-    else if(strncmp(register, "$t2", 3) == 0) {
-        return 10;
-    }
-    else if(strncmp(register, "$t3", 3) == 0) {
-        return 11;
-    }
-    else if(strncmp(register, "$t4", 3) == 0) {
-        return 12;
-    }
-    else if(strncmp(register, "$t5", 3) == 0) {
-        return 13;
-    }
-    else if(strncmp(register, "$t6", 3) == 0) {
-        return 14;
-    }
-    else if(strncmp(register, "$t7", 3) == 0) {
-        return 15;
-    }
-    else if(strncmp(register, "$s0", 3) == 0) {
-        return 16;
-    }
-    else if(strncmp(register, "$s1", 3) == 0) {
-        return 17;
-    }
-    else if(strncmp(register, "$s2", 3) == 0) {
-        return 18;
-    }
-    else if(strncmp(register, "$s3", 3) == 0) {
-        return 19;
-    }
-    else if(strncmp(register, "$s4", 3) == 0) {
-        return 20;
-    }
-    else if(strncmp(register, "$s5", 3) == 0) {
-        return 21;
-    }
-    else if(strncmp(register, "$s6", 3) == 0) {
-        return 22;
-    }
-    else if(strncmp(register, "$s7", 3) == 0) {
-        return 23;
-    }
-    else if(strncmp(register, "$t8", 3) == 0) {
-        return 24;
-    }
-    else if(strncmp(register, "$t9", 3) == 0) {
-        return 25;
-    }
-    else if(strncmp(register, "$k0", 3) == 0) {
-        return 26;
-    }
-    else if(strncmp(register, "$k1", 3) == 0) {
-        return 27;
-    }
-    else if(strncmp(register, "$gp", 3) == 0) {
-        return 28;
-    }
-    else if(strncmp(register, "$sp", 3) == 0) {
-        return 29;
-    }
-    else if(strncmp(register, "$fp", 3) == 0) {
-        return 30;
-    }
-    else if(strncmp(register, "$ra", 3) == 0) {
-        return 31;
-    }
+
+char *encodeInstructionToBinary(char **splittedInstruction) {
+    char *opcode = splittedInstruction[0];
+    char *rd = splittedInstruction[1];
+    char *rs = splittedInstruction[2];
+    char *rt = splittedInstruction[3];
+
+    int opcodeInt = getOpcodeFromAsm(opcode);
+    int rdInt = getRegisterInt(rd);
+    printf("rdInt: %d\n", rdInt);
+    int rsInt = getRegisterInt(rs);
+    printf("rsInt: %d\n", rsInt);
+    int rtInt = getRegisterInt(rt);
+    printf("rtInt: %d\n", rtInt);
+
+    char *opcodeBinary = intToBinary(opcodeInt, 6);
+    printf("opcodeBinary: %s\n", opcodeBinary);
+    char *rdBinary = intToBinary(rdInt, 5);
+    printf("rdBinary: %s\n", rdBinary);
+    char *rsBinary = intToBinary(rsInt, 5);
+    printf("rsBinary: %s\n", rsBinary);
+    char *rtBinary = intToBinary(rtInt, 5);
+    printf("rtBinary: %s\n", rtBinary);
+
+    char *shamt = "00000";
+    int funct = getFunctBinaryString(opcode);
+    char *functBinary = intToBinary(funct, 6);
+
+    char *binaryInstruction = malloc(32 * sizeof(char));
+    
+    sprintf(binaryInstruction, "%s%s%s%s%s%s", opcodeBinary, rsBinary, rtBinary, rdBinary, shamt, functBinary);
+    printf("\n%ld\n", strlen(binaryInstruction));
+    return binaryInstruction;
 }
+
+
+char **splitRTypeString(char *instruction) {
+    // op, reg1, reg2, reg3
+    char **splitted = malloc(4 * sizeof(char *));
+
+    const char *delimiter = ", ";
+    char *token = strtok(instruction, delimiter);
+    int i = 0;
+
+    while (token != NULL && i < 4) {
+        splitted[i] = strdup(token);
+        if (splitted[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed.\n");
+            exit(1);
+        }
+        i++;
+        token = strtok(NULL, delimiter);
+    }
+
+    free(instruction); // Free the copied string
+    return splitted;
+}
+
 
 int getOpcodeFromAsm(char *instruction) {
     // beq 1, 2, label
