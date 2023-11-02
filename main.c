@@ -7,6 +7,9 @@
 
 // store address, increment address and then compare label with current_address (where label addr is the addr where current was called (ex: beq 1, 2, label) + (label_desloc * 4)) 
 
+int encode();
+int decode();
+
 int compareIntegers(const void *a, const void *b) {
     int intA = *((int*)a);
     int intB = *((int*)b);
@@ -16,46 +19,107 @@ int compareIntegers(const void *a, const void *b) {
     return 0;
 }
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc < 2) {
+        printf("Usage: ./main <encode|decode>\n");
+        exit(1);
+    }
+
+    char *option = argv[1];
+
+    if(strcmp(option, "encode") == 0) {
+        encode();
+        return 0;
+    }
+    else if(strcmp(option, "decode") == 0) {
+        decode();
+        return 0;
+    }
+    else {
+        printf("Usage: ./main <encode|decode>\n");
+        exit(1);
+    }
+}
+
+int encode() {
     FILE *input = getFile("entrada.asm", "r");
     FILE *output = getFile("saida.txt", "w");
 
     char *line;
-    //skip first 3 lines
     for(int i = 0; i < 3; i++) {
         line = getNextLine(input);
-        printf("%s\n", line);
         free(line);
     }
 
+    int memoryAddress = 0x00400000;
     while(line = getNextLine(input)) {
-        printf("%s\n", line);
         char *trimmedLine = trim(line);
-        printf("%s\n", trimmedLine);
-        // writeLine(output, line);
-        int opcode = getOpcodeFromAsm(trimmedLine);
-        printf("Opcode: %d\n", opcode);
+
+        char *instruction = removeLabelFromInstruction(trimmedLine);
+
+        instruction = trim(instruction);
+
+        int opcode = getOpcodeFromAsm(instruction);
 
         if(opcode == 0) {
-            char **result = splitRTypeString(trimmedLine);
+            char **result = splitRTypeString(instruction);
 
-            char *binaryInstruction = encodeInstructionToBinary(result);
+            char *binaryInstruction = encodeRInstructionToBinary(result);
 
             char *hexadecimalInstruction = binaryToHexadecimal(binaryInstruction);
 
-            printf("Binary instruction: %s\n", binaryInstruction);      
-
-            printf("Hexadecimal instruction: %s\n", hexadecimalInstruction);      
+            writeLine(output, hexadecimalInstruction);
         }
         else if(opcode == 2) {
-            // j instruction
-            int a = 0;
+            char **splitted = splitJTypeString(instruction);
+
+            FILE *in = getFile("entrada.asm", "r");
+
+            char *binaryInstruction = encodeJInstructionToBinary(splitted, in);
+
+            char *hexadecimalInstruction = binaryToHexadecimal(binaryInstruction);
+
+            writeLine(output, hexadecimalInstruction);
         }
         else {
             // type-i instruction
-            int b = 0;
+
+            // if is beq: beq 1, 2, label
+            // we need to replace label with the address of the label
+            // and then calculate the desloc
+
+            // beq
+            if(opcode == 0x4) {
+                int toSkip = 3 + 1 + 3 + 2 + 3 + 2;
+                char *skipped = instruction + toSkip;
+
+                FILE *f = getFile("entrada.asm", "r");
+                int labelAddress = getLabelAddressFromFile(f, skipped);
+
+
+                int desloc = (labelAddress - memoryAddress - 4) / 4;
+
+                char *deslocStr = malloc(100);
+                sprintf(deslocStr, "%d", desloc);
+
+                char *replaced = replaceSubstring(instruction, skipped, deslocStr);
+                
+                instruction = replaced;
+            }
+
+            char **splitted = splitITypeString(instruction);
+
+            char *binaryInstruction = encodeIInstructionToBinary(splitted);
+
+            char *hexadecimalInstruction = binaryToHexadecimal(binaryInstruction);
+
+            writeLine(output, hexadecimalInstruction);
         }
+        memoryAddress += 4;
     }
+    closeFile(input);
+    closeFile(output);
+    return 0;
 }
 
 int decode() {
@@ -200,4 +264,5 @@ int decode() {
     }
     closeFile(outputFile);
     closeFile(out);
+    return 0;
 }

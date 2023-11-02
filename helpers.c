@@ -15,6 +15,24 @@ char *intToBinary(int n, int bits) {
     return binary;
 }
 
+char *removeLabelFromInstruction(char *instruction) {
+    // label1: instruction returns instruction
+    char *token = strchr(instruction, ':');
+
+    if (token == NULL) {
+        return instruction;
+    }
+
+    size_t len = strlen(token + 1);
+
+    char *result = (char *)malloc(len + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+    strcpy(result, token + 1);
+    return result;
+}
+
 char *binaryToHexadecimal(char *binaryInstruction) {
     char *hexadecimal = malloc(8 * sizeof(char));
     if (hexadecimal == NULL) {
@@ -143,4 +161,49 @@ int getRegisterInt(char *regist) {
     else {
         return -1;
     }
+}
+
+char *replaceSubstring(const char *str, const char *oldSubstr, const char *newSubstr) {
+    char *result = NULL;
+    const char *start = str;
+    const char *found = strstr(start, oldSubstr);
+    size_t oldLen = strlen(oldSubstr);
+    size_t newLen = strlen(newSubstr);
+
+    if (!found) {
+        result = strdup(str);
+    } else {
+        size_t count = 0;
+        while (found) {
+            count++;
+            start = found + oldLen;
+            found = strstr(start, oldSubstr);
+        }
+
+        size_t resultLen = strlen(str) + (newLen - oldLen) * count + 1;
+        result = (char *)malloc(resultLen);
+
+        if (!result) {
+            perror("Memory allocation failed");
+            exit(1);
+        }
+
+        char *dest = result;
+        start = str;
+        found = strstr(start, oldSubstr);
+
+        while (found) {
+            size_t len = found - start;
+            strncpy(dest, start, len);
+            dest += len;
+            strcpy(dest, newSubstr);
+            dest += newLen;
+            start = found + oldLen;
+            found = strstr(start, oldSubstr);
+        }
+
+        strcpy(dest, start);
+    }
+
+    return result;
 }

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "helpers.h"
+#include "io.h"
 
 #ifndef ENCODER_H
 #define ENCODER_H
@@ -13,6 +14,16 @@ int getOpcodeFromAsm(char *instruction);
 
 char **splitRTypeString(char *instruction);
 
-char *encodeInstructionToBinary(char **splittedInstruction);
+char *encodeRInstructionToBinary(char **splittedInstruction);
+
+char **splitJTypeString(char *instruction);
+
+char *encodeJInstructionToBinary(char **splittedInstruction, FILE *inputFile);
+
+int getLabelAddressFromFile(FILE *f, char *label);
+
+char **splitITypeString(char *instruction);
+
+char *encodeIInstructionToBinary(char **splitted);
 
 #endif

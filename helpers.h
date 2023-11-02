@@ -14,4 +14,8 @@ int getRegisterInt(char *regist);
 
 int getFunctBinaryString(char *opcode);
 
+char *removeLabelFromInstruction(char *instruction);
+
+char *replaceSubstring(const char *str, const char *oldSubstr, const char *newSubstr);
+
 #endif

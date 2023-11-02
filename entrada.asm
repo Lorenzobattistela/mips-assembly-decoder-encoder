@@ -1,5 +1,5 @@
 .text
 .globl main
 main:
-or $t1, $s3, $s4
-j label_1
+label_0: or $t1, $s3, $s4
+beq $s5, $zero, label_0
