@@ -54,12 +54,13 @@ int encode() {
     int memoryAddress = 0x00400000;
     while(line = getNextLine(input)) {
         char *trimmedLine = trim(line);
-
+        
         char *instruction = removeLabelFromInstruction(trimmedLine);
 
         instruction = trim(instruction);
-
+        printf("%s\n", instruction);
         int opcode = getOpcodeFromAsm(instruction);
+        printf("%d\n", opcode);
 
         if(opcode == 0) {
             char **result = splitRTypeString(instruction);
@@ -67,7 +68,7 @@ int encode() {
             char *binaryInstruction = encodeRInstructionToBinary(result);
 
             char *hexadecimalInstruction = binaryToHexadecimal(binaryInstruction);
-
+            printf("%s\n", hexadecimalInstruction);
             writeLine(output, hexadecimalInstruction);
         }
         else if(opcode == 2) {
@@ -90,19 +91,31 @@ int encode() {
 
             // beq
             if(opcode == 0x4) {
-                int toSkip = 3 + 1 + 3 + 2 + 3 + 2;
-                char *skipped = instruction + toSkip;
+                // get label string -> last 7 chars
+                // beq 1, 2, label -> third arg separated by space
+                char *instruction_copy = strdup(instruction);
+                char *delim = " ";
+                char *token = strtok(instruction_copy, delim);
+                char *label = NULL;
+                int i = 0;
+                while(token != NULL) {
+                    if(i == 3) {
+                        label = token;
+                        break;
+                    }
+                    i++;
+                    token = strtok(NULL, delim);
+                }
 
                 FILE *f = getFile("entrada.asm", "r");
-                int labelAddress = getLabelAddressFromFile(f, skipped);
-
+                int labelAddress = getLabelAddressFromFile(f, label);
 
                 int desloc = (labelAddress - memoryAddress - 4) / 4;
 
                 char *deslocStr = malloc(100);
                 sprintf(deslocStr, "%d", desloc);
 
-                char *replaced = replaceSubstring(instruction, skipped, deslocStr);
+                char *replaced = replaceSubstring(instruction, label, deslocStr);
                 
                 instruction = replaced;
             }
