@@ -7,6 +7,8 @@
 
 // store address, increment address and then compare label with current_address (where label addr is the addr where current was called (ex: beq 1, 2, label) + (label_desloc * 4)) 
 
+// TODO: Fix desloc calculus for beq instruction
+
 int encode();
 int decode();
 
