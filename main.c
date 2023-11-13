@@ -196,13 +196,7 @@ int decode() {
                 int desloc = getBeqInstructionDesloc(instructionString);
 
                 int calculatedAddress = calculateAddress(memoryAddress, desloc);
-                if(desloc < 0) {
-                    calculatedAddress += 4; // guess this should not be done, 'cause when PC++ we dont want to go back one more?
-                }
-
-                else {
-                    calculatedAddress += 4;
-                }
+                calculatedAddress += 4;
 
                 labelsIndexes[count] = calculatedAddress;
                 labels[count] = getLabelFromInstruction(instructionString);
