@@ -346,7 +346,7 @@ bool isBeqInstruction(char *instruction) {
 }
 
 char *removeBeqPrefix(char *instruction) {
-    char *newInstruction = instruction + 8;
+    char *newInstruction = instruction + 9;
     return newInstruction;
 }
 
@@ -359,10 +359,10 @@ int getBeqInstructionDesloc(char *instruction) {
             // copy the desloc (str[0:i])
             strncpy(desloc, instructionWithoutStep, i);
             desloc[i] = '\0';
-            instruction + 1;
             return atoi(desloc);
         }
     }
+    return 0;
 }
 
 char *getLabelFromInstruction(char *instruction) {

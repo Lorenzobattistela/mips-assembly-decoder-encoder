@@ -141,7 +141,7 @@ int decode() {
 
     char **labels = malloc(1000 * sizeof(char*));
     int *labelsIndexes = malloc(1000 * sizeof(int));
-    FILE *f = getFile("test.txt", "r");
+    FILE *f = getFile("entrada.txt", "r");
     FILE *outputFile = createFile("output.txt");
 
     char *header = ".text\n.globl main\nmain:";
@@ -196,9 +196,8 @@ int decode() {
                 int desloc = getBeqInstructionDesloc(instructionString);
 
                 int calculatedAddress = calculateAddress(memoryAddress, desloc);
-
                 if(desloc < 0) {
-                    calculatedAddress -= 4;
+                    calculatedAddress += 4; // guess this should not be done, 'cause when PC++ we dont want to go back one more?
                 }
 
                 else {
@@ -226,7 +225,7 @@ int decode() {
     
 
     outputFile = getFile("output.txt", "r");
-    FILE *out = getFile("out.txt", "w");
+    FILE *out = getFile("out.asm", "w");
 
     // sort labelsIndexes
     qsort(labelsIndexes, count, sizeof(int), compareIntegers);
