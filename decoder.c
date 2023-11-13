@@ -83,7 +83,6 @@ char *getRegisterString(int reg) {
 
 
 char *getOperationWithFunctString(int funct) {
-    printf("funct: %d\n", funct);
     switch(funct) {
         case FUNCT_SUB:
             return "sub";
@@ -145,7 +144,6 @@ int getAddressFromJInstruction(char *instruction) {
 }
 
 char *fixJumpAddress(char *jump) {
-    printf("jump: %s\n", jump);
     char *newJump = malloc(100);
     // add 4 0 bits in the start of the string and 2 0 bits at the end
     sprintf(newJump, "0000%s00", jump);
@@ -180,7 +178,6 @@ char *mountTypeIInstructionString(char **splittedInstruction) {
         char *registerString2 = getRegisterString(binaryStringToInt(splittedInstruction[2]));
 
         int immediate = binaryStringToIntWithNegatives(splittedInstruction[3]);
-        printf("IMMEDIATE: %d\n", immediate);
 
         sprintf(instructionString, "%s %s, %d(%s)", operationString, registerString2, immediate, registerString1);
         return instructionString;
@@ -192,7 +189,6 @@ char *mountTypeIInstructionString(char **splittedInstruction) {
         char *registerString1 = getRegisterString(binaryStringToInt(splittedInstruction[1]));
         char *registerString2 = getRegisterString(binaryStringToInt(splittedInstruction[2]));
         int desloc = binaryStringToIntWithNegatives(splittedInstruction[3]);
-        printf("Binary string to int with negatives: %d\n", binaryStringToIntWithNegatives(splittedInstruction[3]));
         char *label = createLabel();
 
         sprintf(instructionString, "step:%d; %s %s, %s, %s", desloc, operationString, registerString1, registerString2, label);

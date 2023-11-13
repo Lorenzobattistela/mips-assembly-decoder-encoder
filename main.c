@@ -23,7 +23,7 @@ int compareIntegers(const void *a, const void *b) {
 
 int main(int argc, char **argv) {
     if (argc < 2) {
-        printf("Usage: ./main <encode|decode>\n");
+        printf("Usage: ./out <encode|decode>\n");
         exit(1);
     }
 
@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
         return 0;
     }
     else {
-        printf("Usage: ./main <encode|decode>\n");
+        printf("Usage: ./out <encode|decode>\n");
         exit(1);
     }
 }
@@ -60,9 +60,7 @@ int encode() {
         char *instruction = removeLabelFromInstruction(trimmedLine);
 
         instruction = trim(instruction);
-        printf("%s\n", instruction);
         int opcode = getOpcodeFromAsm(instruction);
-        printf("%d\n", opcode);
 
         if(opcode == 0) {
             char **result = splitRTypeString(instruction);
@@ -70,7 +68,6 @@ int encode() {
             char *binaryInstruction = encodeRInstructionToBinary(result);
 
             char *hexadecimalInstruction = binaryToHexadecimal(binaryInstruction);
-            printf("%s\n", hexadecimalInstruction);
             writeLine(output, hexadecimalInstruction);
         }
         else if(opcode == 2) {
@@ -153,15 +150,11 @@ int decode() {
     char *line;
     while ((line = getNextLine(f)) != NULL) {
         char *binary = hexToBinary(line);
-        printf("%s\n", binary);
-
         int opcode = getOpcode(binary);
-        printf("Opcode: %d\n", opcode);
 
         if(opcode == 0) {
             char **splitted = splitRTypeInstruction(binary);
             char *instructionString = mountTypeRInstructionString(splitted);
-            printf("Instruction string: %s\n", instructionString);
             writeLine(outputFile, instructionString);
         }
 
@@ -169,9 +162,6 @@ int decode() {
             char **splitted = splitJTypeInstruction(binary);
             char *instructionString = mountTypeJInstructionString(splitted);
             int addr = getAddressFromJInstruction(instructionString);
-
-            printf("Instruction string: %s\n", instructionString);
-            printf("Address: %d\n", addr);
 
             // find some label (if exists) that has the same addr of this instruction
             // if exists, its ok because it will be written anyway
@@ -184,8 +174,6 @@ int decode() {
                     break;
                 }
             }
-
-            printf("Label exists: %d\n", labelExists);
 
             if(!labelExists) {
                 labelsIndexes[count] = addr;
@@ -203,18 +191,13 @@ int decode() {
         else {
             char **splitted = splitITypeInstruction(binary);
             char *instructionString = mountTypeIInstructionString(splitted);
-            printf("Instruction string: %s\n", instructionString);
 
             if(isBeqInstruction(instructionString)) {
-                printf("Is beq instruction\n");
                 int desloc = getBeqInstructionDesloc(instructionString);
 
                 int calculatedAddress = calculateAddress(memoryAddress, desloc);
 
-                printf("Desloc: %d\n", desloc);
-
                 if(desloc < 0) {
-                    printf("Desloc is negative\n");
                     calculatedAddress -= 4;
                 }
 
@@ -225,9 +208,6 @@ int decode() {
                 labelsIndexes[count] = calculatedAddress;
                 labels[count] = getLabelFromInstruction(instructionString);
                 count++;
-                printf("initial address: %d\n", 0x00400000);
-                printf("current address: %d\n", memoryAddress);
-                printf("Label should be written in address %d\n", calculatedAddress);
 
                 char * newString = removeBeqPrefix(instructionString);
                 writeLine(outputFile, newString);
@@ -238,7 +218,6 @@ int decode() {
             }
         }
 
-        printf("\n\n");
         memoryAddress += 4;
         free(line);
     }
@@ -251,25 +230,18 @@ int decode() {
 
     // sort labelsIndexes
     qsort(labelsIndexes, count, sizeof(int), compareIntegers);
-    printf("Sorted labelsIndexes\n");
-    for(int i = 0; i < count; i++) {
-        printf("%d\n", labelsIndexes[i]);
-    }
 
     // skip first 3 lines of the file
     for(int i = 0; i < 3; i++) {
         line = getNextLine(outputFile);
-        printf("%s", line);
         writeLineWithoutBreak(out, line);
         free(line);
     }
 
     memoryAddress = 0x00400000;
     while ((line = getNextLine(outputFile)) != NULL) {
-        printf("%s", line);
         if(labelsIndexes[last_written_address] == memoryAddress) {
             char *label = labels[last_written_address];
-            printf("Label: %s should be written in address %d\n", label, memoryAddress);
             writeLabel(out, label);
             last_written_address++;
         }
