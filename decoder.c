@@ -127,10 +127,7 @@ char *getOperationString(int opcode) {
 char *mountTypeJInstructionString(char **splittedInstruction) {
     char *instructionString = malloc(100);
     char *operationString = getOperationString(binaryStringToInt(splittedInstruction[0]));
-
-    char *jumpAddr = fixJumpAddress(splittedInstruction[1]);
-
-    int immediate = binaryStringToInt(jumpAddr);
+    int immediate = binaryStringToInt(splittedInstruction[1]);
 
     sprintf(instructionString, "%s %d", operationString, immediate);
 
@@ -143,12 +140,6 @@ int getAddressFromJInstruction(char *instruction) {
     return atoi(address);
 }
 
-char *fixJumpAddress(char *jump) {
-    char *newJump = malloc(100);
-    // add 4 0 bits in the start of the string and 2 0 bits at the end
-    sprintf(newJump, "0000%s00", jump);
-    return newJump;
-}
 
 char *shortJumpAddress(char *jump) {
     char *newJump = malloc(100);
