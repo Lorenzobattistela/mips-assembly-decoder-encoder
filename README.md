@@ -29,5 +29,5 @@ no arquivo `saida.asm`, contendo um programa válido assembly.
 Caso alguma alteração tenha sido feita, é necessário recompilar o programa. Se você tiver `make` instalado em sua máquina, basta rodar:
 `make` para recompilar o programa e depois rodar `./converter <encode/decode>` novamente.
 
-Caso não tenha `make`, basta compilar com o gcc: `gcc -o converter io.c decoder.c main.c encoder.c helpers.c` e novamente rodar `./converter <encode/decode>`
+Caso não tenha `make`, basta compilar com o gcc: `gcc -o converter io.c decoder.c main.c encoder.c helpers.c` e novamente rodar `./converter <encode/>`
 
