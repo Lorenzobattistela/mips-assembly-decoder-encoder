@@ -11,5 +11,6 @@ void writeLine(FILE *file, char *line);
 FILE *createFile(char *path);
 void writeLabel(FILE *file, char *label);
 void writeLineWithoutBreak(FILE *file, char *line);
+void deleteFile(char *path);
 
 #endif

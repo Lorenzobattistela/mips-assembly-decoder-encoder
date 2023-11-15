@@ -43,6 +43,14 @@ FILE *getFile(char *path, char *mode) {
     return file;
 }
 
+void deleteFile(char *path) {
+  int status = remove(path);
+  if (status != 0) {
+    printf("Error: Could not delete file %s\n", path);
+    exit(1);
+  }
+}
+
 void closeFile(FILE *file) {
     fclose(file);
 }
