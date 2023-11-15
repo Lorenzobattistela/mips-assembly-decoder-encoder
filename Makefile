@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -g
 SRC = encoder.c decoder.c helpers.c io.c main.c
 OBJS = $(SRC:.c=.o)
-EXECUTABLE = out
+EXECUTABLE = converter
 
 all: $(EXECUTABLE)
 
