@@ -127,6 +127,7 @@ int encode() {
     }
     closeFile(input);
     closeFile(output);
+    printf("Arquivo saida.txt criado com sucesso.\n");
     return 0;
 }
 
@@ -213,7 +214,7 @@ int decode() {
     
 
     outputFile = getFile("output.txt", "r");
-    FILE *out = getFile("out.asm", "w");
+    FILE *out = getFile("saida.asm", "w");
 
     // sort labelsIndexes
     qsort(labelsIndexes, count, sizeof(int), compareIntegers);
@@ -239,5 +240,6 @@ int decode() {
     closeFile(outputFile);
     closeFile(out);
     deleteFile("output.txt");
+    printf("Arquivo saida.asm criado com sucesso.\n");
     return 0;
 }
