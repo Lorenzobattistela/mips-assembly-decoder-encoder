@@ -7,8 +7,6 @@
 
 // store address, increment address and then compare label with current_address (where label addr is the addr where current was called (ex: beq 1, 2, label) + (label_desloc * 4)) 
 
-// TODO: Fix desloc calculus for beq instruction
-
 int encode();
 int decode();
 
@@ -23,7 +21,7 @@ int compareIntegers(const void *a, const void *b) {
 
 int main(int argc, char **argv) {
     if (argc < 2) {
-        printf("Usage: ./out <encode|decode>\n");
+        printf("Usage: ./converter <encode|decode>\n");
         exit(1);
     }
 
@@ -38,7 +36,7 @@ int main(int argc, char **argv) {
         return 0;
     }
     else {
-        printf("Usage: ./out <encode|decode>\n");
+        printf("Usage: ./converter <encode|decode>\n");
         exit(1);
     }
 }
@@ -54,14 +52,13 @@ int encode() {
     }
 
     int memoryAddress = 0x00400000;
-    while(line = getNextLine(input)) {
+    while((line = getNextLine(input))) {
         char *trimmedLine = trim(line);
         
         char *instruction = removeLabelFromInstruction(trimmedLine);
 
         instruction = trim(instruction);
         int opcode = getOpcodeFromAsm(instruction);
-
         if(opcode == 0) {
             char **result = splitRTypeString(instruction);
 
@@ -124,7 +121,6 @@ int encode() {
             char *binaryInstruction = encodeIInstructionToBinary(splitted);
 
             char *hexadecimalInstruction = binaryToHexadecimal(binaryInstruction);
-
             writeLine(output, hexadecimalInstruction);
         }
         memoryAddress += 4;
@@ -151,7 +147,6 @@ int decode() {
     while ((line = getNextLine(f)) != NULL) {
         char *binary = hexToBinary(line);
         int opcode = getOpcode(binary);
-
         if(opcode == 0) {
             char **splitted = splitRTypeInstruction(binary);
             char *instructionString = mountTypeRInstructionString(splitted);
@@ -166,7 +161,6 @@ int decode() {
             // find some label (if exists) that has the same addr of this instruction
             // if exists, its ok because it will be written anyway
             // if it does not exist, we need to create a new label on that addr
-
             bool labelExists = false;
             for(int i = 0; i < count; i++) {
                 if(labelsIndexes[i] == addr) {
@@ -244,5 +238,6 @@ int decode() {
     }
     closeFile(outputFile);
     closeFile(out);
+    deleteFile("output.txt");
     return 0;
 }
