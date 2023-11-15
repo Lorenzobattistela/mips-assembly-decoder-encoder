@@ -149,7 +149,7 @@ char *encodeIInstructionToBinary(char **splitted) {
     int rtInt = getRegisterInt(rt);
     int rsInt = getRegisterInt(rs);
     int immInt = atoi(imm);
-
+  
     char *opcodeBinary = intToBinary(opcodeInt, 6);
     char *rtBinary = intToBinary(rtInt, 5);
     char *rsBinary = intToBinary(rsInt, 5);
@@ -235,7 +235,7 @@ int getOpcodeFromAsm(char *instruction) {
         return 43;
     }
     else if(strncmp(instruction, "lw", 2) == 0) {
-        return 23;
+        return 35;
     }
     else if(strncmp(instruction, "beq", 3) == 0) {
         return 4;
