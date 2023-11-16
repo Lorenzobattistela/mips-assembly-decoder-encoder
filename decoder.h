@@ -23,6 +23,16 @@ enum opcodes {
     OPCODE_BEQ = 0x4,
     OPCODE_SLTIU = 0xB,
     OPCODE_J = 0x2,
+    OPCODE_JAL = 0x3,
+    OPCODE_ADDI = 0x8,
+    OPCODE_ORI = 0xD,
+    OPCODE_ANDI = 0xC,
+    OPCODE_SLTI = 0xA,
+    OPCOE_XORI = 0xE,
+    OPCODE_BGEZ = 0x1,
+    OPCODE_BGTZ = 0x7,
+    OPCODE_BLEZ = 0x6,
+    OPCODE_BNE = 0x5,
 };
 
 enum registers {

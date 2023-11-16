@@ -9,3 +9,8 @@ and $t1, $t2, $s4
 sub $s1, $s2, $t2
 sltiu $t1, $t2, 10
 j label_0
+addi $t1, $t2, 10
+andi $t1, $t2, 10
+ori $t1, $t2, 10
+slti $t1, $t2, 10
+xori $t1, $t2, 10

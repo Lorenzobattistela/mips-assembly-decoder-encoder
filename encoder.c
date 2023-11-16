@@ -227,9 +227,23 @@ int getLabelAddressFromFile(FILE *f, char *label) {
 }
 
 int getOpcodeFromAsm(char *instruction) {
-    // beq 1, 2, label
     if(strncmp(instruction, "j", 1) == 0) {
         return 2;
+    }
+    else if(strncmp(instruction, "addi", 4) == 0) {
+      return 8;
+    }
+    else if(strncmp(instruction, "andi", 4) == 0) {
+      return 12;
+    }
+    else if(strncmp(instruction, "ori", 3) == 0) {
+      return 13;
+    }
+    else if(strncmp(instruction, "slti", 4) == 0) {
+      return 10;
+    }
+    else if(strncmp(instruction, "xori", 4) == 0) {
+      return 14;
     }
     else if(strncmp(instruction, "sw", 2) == 0) {
         return 43;
@@ -242,6 +256,21 @@ int getOpcodeFromAsm(char *instruction) {
     }
     else if(strncmp(instruction, "sltiu", 5) == 0) {
         return 11;
+    }
+    else if(strncmp(instruction, "bgez", 4) == 0) {
+      return 1;
+    }
+    else if(strncmp(instruction, "bgtz", 4) == 0) {
+      return 7;
+    }
+    else if(strncmp(instruction, "blez", 4) == 0) {
+      return 6;
+    }
+    else if(strncmp(instruction, "bne", 3) == 0) {
+      return 5;
+    }
+    else if(strncmp(instruction, "jal", 3) == 0) {
+      return 3;
     }
     return 0;
 }
