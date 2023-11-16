@@ -9,3 +9,7 @@ and $t1, $t2, $s4
 sub $s1, $s2, $t2
 sltiu $t2, $t1, 10
 j label_0
+beq $t0, $zero, label_1
+or $t1, $s3, $s4
+or $t1, $s3, $s4
+label_1:	or $t1, $s3, $s4

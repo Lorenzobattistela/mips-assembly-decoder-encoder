@@ -337,7 +337,11 @@ bool isBeqInstruction(char *instruction) {
 }
 
 char *removeBeqPrefix(char *instruction) {
-    char *newInstruction = instruction + 9;
+    char *semicolonPos = strchr(instruction, ';');
+    if(semicolonPos == NULL) {
+      return NULL;  
+    }
+    char *newInstruction = semicolonPos + 2;
     return newInstruction;
 }
 
