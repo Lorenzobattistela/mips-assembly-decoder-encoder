@@ -4,11 +4,8 @@
 #include "decoder.h"
 #include "encoder.h"
 #include "helpers.h"
-
+#include "main.h"
 // store address, increment address and then compare label with current_address (where label addr is the addr where current was called (ex: beq 1, 2, label) + (label_desloc * 4)) 
-
-int encode();
-int decode();
 
 int compareIntegers(const void *a, const void *b) {
     int intA = *((int*)a);
@@ -19,7 +16,7 @@ int compareIntegers(const void *a, const void *b) {
     return 0;
 }
 
-int main(int argc, char **argv) {
+int mai(int argc, char **argv) {
     if (argc < 2) {
         printf("Usage: ./converter <encode|decode>\n");
         exit(1);
