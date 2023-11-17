@@ -4,10 +4,19 @@
 #include <io.h>
 #include <main.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define PORT 8080
 // compile with 
 // gcc $(pkg-config --cflags libulfius) -o api api.c ../encoder.c ../io.c ../main.c ../decoder.c ../helpers.c  $(pkg-config --libs libulfius) -I ..
+
+bool validateHexadecimalInstruction(char *hexadecimal) {
+  if(strlen(hexadecimal) != 10 || strncmp(hexadecimal, "0x", 2) != 0) {
+    return false;
+  }
+  return true;
+}
+
 int callback(const struct _u_request *request, struct _u_response *response, void *user_data) {
   ulfius_set_string_body_response(response, 200, "Testing");
   return U_CALLBACK_CONTINUE;
@@ -16,6 +25,12 @@ int callback(const struct _u_request *request, struct _u_response *response, voi
 int decodeCallback(const struct _u_request *request, struct _u_response *response, void *user_data) {
   const char *stringToDecode = u_map_get(request->map_post_body, "hexadecimal");
   char *code = strcpy(malloc(strlen(stringToDecode) + 1), stringToDecode);
+
+  bool isValidCode = validateHexadecimalInstruction(code);
+  if(!isValidCode) {
+    ulfius_set_string_body_response(response, 422, "Error: Invalid body. Please send an 8 digit hexadecimal string: 0x12345678 that corresponds to a mips instruction code.");
+    return U_CALLBACK_CONTINUE;
+  }
 
   FILE *in = getFile("entrada.txt", "w");
   writeLine(in, code);
@@ -40,7 +55,7 @@ int encodeCallback(const struct _u_request *request, struct _u_response *respons
   char *instruction = strcpy(malloc(strlen(payload) + 1), payload);
 
   FILE *in = getFile("entrada.asm", "w");
-  writeLine(in, ".text\n.globl\nmain:\n");
+  writeLine(in, ".text\n.globl\nmain:");
   writeLine(in, instruction);
   closeFile(in);
   
@@ -65,6 +80,7 @@ int main(void) {
   // endpoint list declaration
   ulfius_add_endpoint_by_val(&instance, "GET", "/helloworld", NULL, 0, &callback, NULL);
   ulfius_add_endpoint_by_val(&instance, "POST", "/decode", NULL, 0, &decodeCallback, NULL);
+  ulfius_add_endpoint_by_val(&instance, "POST", "/encode", NULL, 9, &encodeCallback, NULL);
 
   if(ulfius_start_framework(&instance) == U_OK) {
     printf("Start framework on port %d\n", PORT);
