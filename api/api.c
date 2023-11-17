@@ -7,7 +7,7 @@
 
 #define PORT 8080
 // compile with 
-// gcc $(pkg-config --cflags libulfius) -o api api.c $(pkg-config --libs libulfius) -I../
+// gcc $(pkg-config --cflags libulfius) -o api api.c ../encoder.c ../io.c ../main.c ../decoder.c ../helpers.c  $(pkg-config --libs libulfius) -I ..
 int callback(const struct _u_request *request, struct _u_response *response, void *user_data) {
   ulfius_set_string_body_response(response, 200, "Testing");
   return U_CALLBACK_CONTINUE;
@@ -23,9 +23,34 @@ int decodeCallback(const struct _u_request *request, struct _u_response *respons
   
   decode();
   
+  FILE *out = getFile("saida.asm", "r");
+  char *line;
+  char *res = malloc(100);
 
-  printf("String to decode: %s\n", stringToDecode);
-  ulfius_set_string_body_response(response, 200, stringToDecode);
+  while((line = getNextLine(out))) {
+    strcat(res, line);
+  }
+
+  ulfius_set_string_body_response(response, 200, res);
+  return U_CALLBACK_CONTINUE;
+}
+
+int encodeCallback(const struct _u_request *request, struct _u_response *response, void *user_data) {
+  const char *payload = u_map_get(request->map_post_body, "instruction");
+  char *instruction = strcpy(malloc(strlen(payload) + 1), payload);
+
+  FILE *in = getFile("entrada.asm", "w");
+  writeLine(in, ".text\n.globl\nmain:\n");
+  writeLine(in, instruction);
+  closeFile(in);
+  
+  encode();
+
+  FILE *out = getFile("saida.txt", "r");
+  char *line;
+  char *res = getNextLine(out);
+  
+  ulfius_set_string_body_response(response, 200, res);
   return U_CALLBACK_CONTINUE;
 }
 
