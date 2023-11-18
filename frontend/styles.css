@@ -1,0 +1,29 @@
+
+.central {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  margin: 3rem;
+  margin-right: 5rem;
+  margin-left: 5rem;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin: 1rem;
+}
+
+input {
+  margin-top: 1.5rem;
+}

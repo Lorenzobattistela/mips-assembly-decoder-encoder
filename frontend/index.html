@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HTML 5 Boilerplate</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="central">
+      <h1>MIPS - Instruction decoder / encoder</h1>
+      <div class="inputs">
+        <form id="form-decode">
+            <label for="hexadecimal">Hexadecimal instruction:</label>
+            <input type="text" id="hexadecimal" name="hexadecimal"/>
+            <input type="submit" value="Decode" id="decode"/>
+            <textarea id="decode-result">
+            </textarea>
+        </form>
+        <form id="form-encode">
+          <label for="mipsInstruction">MIPS instruction:</label>
+          <input type="text" id="mipsInstruction" name="mipsInstruction"/>
+          <input type="submit" value="Encode" id="encode"/>
+          <textarea id="encode-result"></textarea> 
+        </form>
+      </div>
+    </div>
+	<script src="script.js"></script>
+  </body>
+</html>
