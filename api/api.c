@@ -27,10 +27,6 @@ int callback_options(const struct _u_request *request, struct _u_response *respo
   return U_CALLBACK_COMPLETE;
 }
 
-int callback(const struct _u_request *request, struct _u_response *response, void *user_data) {
-  ulfius_set_string_body_response(response, 200, "Testing");
-  return U_CALLBACK_CONTINUE;
-}
 
 int decodeCallback(const struct _u_request *request, struct _u_response *response, void *user_data) {
   const char *stringToDecode = u_map_get(request->map_post_body, "hexadecimal");
@@ -89,7 +85,6 @@ int main(void) {
 
   // endpoint list declaration 
   ulfius_add_endpoint_by_val(&instance, "OPTIONS", NULL, "*", 0, &callback_options, NULL);
-  ulfius_add_endpoint_by_val(&instance, "GET", "/helloworld", NULL, 0, &callback, NULL);
   ulfius_add_endpoint_by_val(&instance, "POST", "/decode", NULL, 0, &decodeCallback, NULL);
   ulfius_add_endpoint_by_val(&instance, "POST", "/encode", NULL, 0, &encodeCallback, NULL);
 
