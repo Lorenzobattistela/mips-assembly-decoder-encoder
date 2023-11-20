@@ -41,9 +41,11 @@ int decodeCallback(const struct _u_request *request, struct _u_response *respons
   FILE *in = getFile("entrada.txt", "w");
   writeLine(in, code);
   closeFile(in);
-  
+
   decode();
-  
+
+  remove("entrada.txt");
+
   FILE *out = getFile("saida.asm", "r");
   char *line;
   char *res = malloc(100);
@@ -51,6 +53,7 @@ int decodeCallback(const struct _u_request *request, struct _u_response *respons
   while((line = getNextLine(out))) {
     strcat(res, line);
   }
+  remove("saida.asm");
   ulfius_set_string_body_response(response, 200, res);
   return U_CALLBACK_CONTINUE;
 }
@@ -66,10 +69,12 @@ int encodeCallback(const struct _u_request *request, struct _u_response *respons
   
   encode();
 
+  remove("entrada.asm");
+
   FILE *out = getFile("saida.txt", "r");
   char *line;
   char *res = getNextLine(out);
-  
+  remove("saida.txt");
   ulfius_set_string_body_response(response, 200, res);
   return U_CALLBACK_CONTINUE;
 }
